@@ -1,0 +1,148 @@
+ARC — Autonomous Reasoning Core (v1)
+=================================
+
+ARC is a local-first, voice-operated OS assistant designed for fast execution, low latency, and precision.
+It combines offline speech recognition, a locally hosted language model, and speech synthesis into a single,
+continuous voice interaction loop.
+
+ARC behaves less like a chatbot and more like an operating system interface.
+
+--------------------------------------------------
+CORE PRINCIPLES
+--------------------------------------------------
+• Local-first (no cloud dependency)
+• Low latency and deterministic flow
+• Voice-native by design
+• Action over conversation
+• Extensible architecture
+
+--------------------------------------------------
+FEATURES (v1)
+--------------------------------------------------
+
+Speech Recognition
+- Offline STT using Vosk
+- Real-time microphone input (PyAudio)
+- RMS-based speech detection
+- Silence-based utterance finalization
+
+Local Reasoning
+- Ollama with LLaMA 3.1
+- Condensed system prompt for speed
+- Voice-optimized response length
+
+Speech Output
+- pyttsx3 (Windows SAPI)
+- Persistent engine lifecycle
+- Configurable speaking rate
+
+Interaction Loop
+- Always-on listening
+- Natural pauses
+- Stable multi-turn operation
+
+--------------------------------------------------
+ASSISTANT PERSONALITY
+--------------------------------------------------
+ARC blends:
+- J.A.R.V.I.S. (precision)
+- F.R.I.D.A.Y. (warmth)
+- TARS (dry wit)
+
+Traits:
+- Concise, calm, technical
+- Light humor when useful
+- Emotionally aware
+- Optimized for speech
+
+--------------------------------------------------
+ARCHITECTURE
+--------------------------------------------------
+
+Microphone
+ → Audio Capture (PyAudio)
+ → Speech Detection (RMS + Silence)
+ → Speech Recognition (Vosk)
+ → Local LLM (Ollama / LLaMA 3.1)
+ → Speech Synthesis (pyttsx3)
+
+--------------------------------------------------
+CONFIGURATION
+--------------------------------------------------
+
+Audio:
+SAMPLE_RATE = 16000
+RMS_THRESHOLD = 180
+SILENCE_TIMEOUT = 1.8
+
+Speech Model:
+vosk-model-en-us-0.22-lgraph
+
+LLM:
+llama3.1 (Ollama)
+
+--------------------------------------------------
+INSTALLATION
+--------------------------------------------------
+
+Requirements:
+- Python 3.9+
+- Windows
+- Microphone
+- Ollama installed
+
+Install dependencies:
+pip install pyaudio vosk pyttsx3 ollama
+
+Download Vosk model:
+https://alphacephei.com/vosk/models
+
+--------------------------------------------------
+RUNNING ARC
+--------------------------------------------------
+
+python ARC_AI.py
+
+Output:
+ARC initialized
+Listening...
+
+--------------------------------------------------
+DEBUG METRICS
+--------------------------------------------------
+
+Optional metrics:
+- Tokens per response
+- Inference time
+- Speech duration
+
+--------------------------------------------------
+KNOWN LIMITATIONS (v1)
+--------------------------------------------------
+
+- No intent detection
+- No system command execution
+- No sliding context window
+- Single-turn memory
+
+--------------------------------------------------
+ROADMAP
+--------------------------------------------------
+
+v2:
+- Intent classification
+- OS command execution
+- Sliding window context
+
+v3:
+- Wake word
+- Plugin architecture
+- Confidence-based re-asking
+
+--------------------------------------------------
+PHILOSOPHY
+--------------------------------------------------
+
+ARC is not a chatbot.
+It is an operating system interface.
+Speed and clarity are non-negotiable.
