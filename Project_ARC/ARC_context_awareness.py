@@ -14,7 +14,7 @@ from colorama import init, Fore, Style
 # VOICE TO TEXT CONFIG
 # ======================
 
-MODEL_PATH = r"D:\\Pyproj\\Project_ARC\\vosk-model-small-en-in-0.4"   # language library for speech to text
+MODEL_PATH = r"Drive:\\vosk-model-small-en-in-0.4"   # language library path for speech to text
 SAMPLE_RATE = 16000
 RMS_THRESHOLD = 180 
 SILENCE_TIMEOUT = 1.8  # seconds
@@ -25,7 +25,7 @@ SILENCE_TIMEOUT = 1.8  # seconds
 # CONTEXT MEMORY (v2.0.0)
 # ======================
 
-MAX_WINDOW = 2  # 35 user + 35 ARC ideally for not crashing
+MAX_WINDOW = 70  # 35 user + 35 ARC ideally for not crashing
 
 working_context = []   # sliding window (conversation flow)
 session_memory = []    # condensed memory store
@@ -112,11 +112,11 @@ ASCII_BANNER = r"""
                           @@@   ...<@@%  %@@  o@@@@%  @@@                                  
                          @@@   %@@@@@@@@ %@@    @@@    @@@                                 
                         @@@:         "@@@@@@     @@@o   @@@@o  :%@@@.                      
-                       "@@:           "@@@@@      o@@%_  :%@@@@@@@o    .AI                 
+                       "@@:           "@@@@@      o@@%_  :%@@@@@@@o    .AI 2.0.1                
                                                                                                        
                             Autonomous Reasoning Core. A local-first,
                            voice-operated operating system assistive AI.
-                          Version - 2.0.0 running on llama3.1 and coffee. 
+                          Version - 2 running on llama3.1 and coffee. 
                     ________________________________________________________                                                                      
                                                                                            
 """
