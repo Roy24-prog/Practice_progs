@@ -25,7 +25,7 @@ SILENCE_TIMEOUT = 1.8  # seconds
 # CONTEXT MEMORY (v2.0.0)
 # ======================
 
-MAX_WINDOW = 70  # 35 user + 35 ARC ideally for not crashing
+MAX_WINDOW = 2  # 35 user + 35 ARC ideally for not crashing
 
 working_context = []   # sliding window (conversation flow)
 session_memory = []    # condensed memory store
@@ -37,22 +37,53 @@ def condense_context():    # CONDENSED CONTEXT making the converstion worth reme
     arc_msgs = [m["content"] for m in working_context if m["role"] == "assistant"]
 
     summary = {
-        "topic": user_msgs[1] if user_msgs else "unknown",
+        "topic": user_msgs[0] if user_msgs else "unknown",
         "intent": "conversation",
         "summary": f"User: {' | '.join(user_msgs)} | ARC: { ' | '.join(arc_msgs) }",
         "timestamp": time.strftime('%H:%M:%S')
     }
 
     session_memory.append(summary)
+    
     # reset working window
     working_context = []
+    print_session_memory()
 
 
 def add_to_context(role, content):   # WORKING CONTEXT keeping recall with the help of working context
     working_context.append({"role": role, "content": content})
     if len(working_context) == MAX_WINDOW:
         condense_context()
-        debug_session_memory()
+        
+
+
+
+# ======================
+# DEBUG
+# ======================
+
+def print_metrics(reply):
+    prompt_tokens = reply.get("prompt_eval_count", 0)
+    response_tokens = reply.get("eval_count", 0)
+    total_tokens = prompt_tokens + response_tokens
+    latency_ms = reply.get("total_duration", 0) / 1_000_000_000
+
+    print(
+        f"{C.DEV} [METRICS] prompt tokens={prompt_tokens} | response tokens={response_tokens} | {C.RESET}"
+        f"{C.DEV}total={total_tokens} | latency={latency_ms:.1f} s{C.RESET}"
+        f"{C.DEV}\n[CTX] window={len(working_context)} | memory={len(session_memory)}{C.RESET}"
+    )
+
+def print_session_memory():
+    print(f"\n{C.DEV}--- SESSION MEMORY ---{C.RESET}")
+    for i, mem in enumerate(session_memory, 1):
+        print(
+            f"{C.DEV}{i}. [{mem['timestamp']}] "
+            f"Topic: {mem['topic']} | "
+            f"Intent: {mem['intent']} | "
+            f"{mem['summary']}{C.RESET}"
+        )
+    print(f"{C.DEV}------------------------{C.RESET}\n")
 
 
 
@@ -144,35 +175,6 @@ def speak(text):
 
 
 # ======================
-# DEBUG
-# ======================
-
-def print_metrics(reply):
-    prompt_tokens = reply.get("prompt_eval_count", 0)
-    response_tokens = reply.get("eval_count", 0)
-    total_tokens = prompt_tokens + response_tokens
-    latency_ms = reply.get("total_duration", 0) / 1_000_000_000
-
-    print(
-        f"{C.DEV} [METRICS] prompt tokens={prompt_tokens} | response tokens={response_tokens} | {C.RESET}"
-        f"{C.DEV}total={total_tokens} | latency={latency_ms:.1f} s{C.RESET}"
-        f"{C.DEV}\n[CTX] window={len(working_context)} | memory={len(session_memory)}{C.RESET}"
-    )
-
-def debug_session_memory():
-    print(f"\n{C.DEV}--- SESSION MEMORY ---{C.RESET}")
-    for i, mem in enumerate(session_memory, 1):
-        print(
-            f"{C.DEV}{i}. [{mem['timestamp']}] "
-            f"Topic: {mem['topic']} | "
-            f"Intent: {mem['intent']} | "
-            f"{mem['summary']}{C.RESET}"
-        )
-    print(f"{C.DEV}------------------------{C.RESET}\n")
-
-
-
-# ======================
 # MAIN LOOP
 # ======================
 
@@ -217,8 +219,10 @@ try:
                 winsound.Beep(800,306)
                 print(f"\n{C.MUTED} {time.strftime('%H:%M:%S')} {C.RESET}\n {C.ARC}ARC >>{C.RESET} {C.TEXT}{response}{C.RESET}")
                 speak(response)
-                add_to_context("assistant", response)
                 print_metrics(reply)
+                add_to_context("assistant", response)
+            
+                
 
             rec.Reset()
             speaking = False 
